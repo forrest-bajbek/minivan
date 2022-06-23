@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./src
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./src:/usr/src/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0
+      - DATABASE_URL=postgres://postgres:postgres@web-db:5432/web_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/web_test
+
+  db:
+    image: redislabs/rejson:2.0.11
