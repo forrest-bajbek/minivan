@@ -11,10 +11,15 @@ services:
     depends_on:
       - db
     environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - REDIS_HOST=db
+      - REDIS_PORT=6379
+      - REDIS_DB=0
       - ENVIRONMENT=dev
       - TESTING=0
-      - DATABASE_URL=postgres://postgres:postgres@web-db:5432/web_dev
-      - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/web_test
 
   db:
     image: redislabs/rejson:2.0.11
+    ports:
+      - 6379:6379
