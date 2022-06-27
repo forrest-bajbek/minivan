@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path
 
-from app.auth.auth_bearer import jwtBearer
 from app.models.pydantic import TaskPayloadSchema, TaskResponseSchema
 
 router = APIRouter()
@@ -46,7 +45,6 @@ def get_tasks() -> list[TaskResponseSchema]:
 
 @router.post(
     "/task",
-    dependencies=[Depends(jwtBearer)],
     response_model=TaskResponseSchema,
     status_code=201,
 )
