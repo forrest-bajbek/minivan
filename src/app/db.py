@@ -19,7 +19,7 @@ def get_redis_connection_data():
 
 
 def get_redis_connection_cache():
-    return aioredis.get_redis_connection(
+    return aioredis.from_url(
         url="{base_url}/{db}".format(
             base_url=os.getenv("REDIS_CACHE_URL"),
             db=int(os.getenv("TESTING", 0)),
