@@ -1,12 +1,18 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 
-from app.api import ping, report, task, user
+from app.api import ping, task
+from app.db import get_redis_connection_cache
+
+# from fastapi_cache.decorator import cache
+
+
+# from fastapi.middleware.cors import CORSMiddleware
 
 log = logging.getLogger("uvicorn")
-
-users = []
 
 
 def create_application() -> FastAPI:
@@ -18,10 +24,19 @@ def create_application() -> FastAPI:
 
 app = create_application()
 
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["http://localhost:8000"],
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
 
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up...")
+    r = get_redis_connection_cache()
+    FastAPICache.init(RedisBackend(r), prefix="fastapi-cache")
 
 
 @app.on_event("shutdown")

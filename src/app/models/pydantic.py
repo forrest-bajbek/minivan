@@ -1,64 +1,36 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
+from pydantic.typing import Literal
 
 
 class TaskPayloadSchema(BaseModel):
-    task_app: str = Field(
-        ...,
-        description="Name of the app that is running the task.",
-    )
-    task_env: str = Field(
-        ...,
-        description="Environment in which the app is running (ie prod, stg, dev)",
-    )
-    task_name: str = Field(
-        ...,
-        description="Name of the task.",
-    )
-    task_status: str = Field(
-        ...,
-        description="Status of the task.",
-    )
-    task_watermark: datetime = Field(
-        ...,
-        description="Status of the task.",
-    )
-    task_start_at: datetime = Field(
-        ...,
-        description="Timestamp at which task started.",
-    )
-    task_stop_at: datetime | None = Field(
-        default=None,
-        description="Timestamp at which task stopped.",
-    )
-    task_metadata: dict | None = Field(
-        default=None,
-        description="Metadata about the task, specific to the app",
-    )
+    task_app: str = Field(...)
+    task_env: Literal["prod", "stg", "dev"] = Field(...)
+    task_name: str = Field(...)
+    task_status: Literal["start", "success", "failure"] = Field(...)
+    task_watermark: datetime = Field(...)
+    task_start_at: datetime = Field(...)
+    task_stop_at: datetime | None = Field(default=None)
+    task_metadata: dict | None = Field(default=None)
 
     class Config:
-        example = {
-            "demo": {
-                "task_app": "test_app",
-                "task_env": "production",
-                "task_name": "test_database.test_table",
+        schema_extra = {
+            "example": {
+                "task_app": "my app",
+                "task_env": "dev",
+                "task_name": "my task",
                 "task_status": "success",
-                "task_watermark": "2022-06-26T00:00:00.000000",
-                "task_start_at": "2022-06-26T03:25:32.099222",
-                "task_stop_at": "2022-06-26T03:35:35.099222",
-                "task_metadata": {
-                    "database": "test_database",
-                    "instance": "test_instance",
-                    "table": "test_table",
-                    "source_location": "mysql",
-                    "target_location": "s3://test_location",
-                },
+                "task_watermark": "2022-06-27 00:00:00.000000+00:00",
+                "task_start_at": datetime.now(timezone.utc),
+                "task_stop_at": datetime.now(timezone.utc),
+                "task_metadata": {"key": "value", "some": ["list", "of", "items"]},
             }
         }
 
 
-class TaskResponseSchema(TaskPayloadSchema):
-    id: int
-    created_at: datetime
-    updated_at: datetime
+class TaskResponseSchema(BaseModel):
+    pk: str = Field(...)
+
+    class Config:
+        schema_extra = {"example": {"pk": "01G6K6JQ5BPD6BX15MDBVP5PY4"}}

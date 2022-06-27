@@ -2,7 +2,7 @@ import logging
 import os
 from functools import cache
 
-from pydantic import AnyUrl, BaseSettings
+from pydantic import BaseSettings
 
 log = logging.getLogger("uvicorn")
 
@@ -10,7 +10,6 @@ log = logging.getLogger("uvicorn")
 class Settings(BaseSettings):
     environment: str = os.getenv("ENVIRONMENT", "dev")
     testing: bool = os.getenv("TESTING", 0)
-    database_url: AnyUrl = os.environ.get("DATABASE_URL")
 
 
 @cache

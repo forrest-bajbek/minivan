@@ -9,17 +9,16 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - db
+      - redis-db
+      - redis-cache
     environment:
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
-      - REDIS_HOST=db
-      - REDIS_PORT=6379
-      - REDIS_DB=0
-      - ENVIRONMENT=dev
-      - TESTING=0
-
-  db:
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      REDIS_DATA_URL: redis://redis-db:6379
+      REDIS_CACHE_URL: redis://redis-cache:6379
+      ENVIRONMENT: dev
+      TESTING: 0
+  redis-db:
     image: redislabs/rejson:2.0.11
-    ports:
-      - 6379:6379
+  redis-cache:
+    image: redislabs/rejson:2.0.11

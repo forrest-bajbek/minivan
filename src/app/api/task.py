@@ -1,65 +1,45 @@
-from datetime import datetime
+from fastapi import APIRouter  # , Path, Query
 
-from fastapi import APIRouter, HTTPException, Path
-
+from app.api import crud
 from app.models.pydantic import TaskPayloadSchema, TaskResponseSchema
+
+# from app.models.redis import Task
 
 router = APIRouter()
 
-tasks = [
-    {
-        "id": 1,
-        "app": "cloudwick",
-        "environment": "testing",
-        "database": "ema",
-        "instance": "dev",
-        "schema": None,
-        "table": "bill",
-        "created_at": datetime(2022, 6, 24, 23, 58, 19, 701579),
-    },
-    {
-        "id": 2,
-        "app": "cloudwick",
-        "environment": "testing",
-        "database": "ema",
-        "instance": "dev",
-        "schema": None,
-        "table": "claim",
-        "created_at": datetime(2022, 6, 24, 23, 58, 19, 701579),
-    },
-]
+
+@router.post("/task", response_model=TaskResponseSchema, status_code=201)
+async def post_task(payload: TaskPayloadSchema) -> TaskResponseSchema:
+    task = await crud.post(payload)
+    return TaskResponseSchema(pk=task.pk)
 
 
-@router.get("/task/{id}", response_model=TaskResponseSchema)
-def get_task(id: int = Path(..., gt=0)) -> TaskResponseSchema:
-    requested_task = [task for task in tasks if task["id"] == id]
-    if not requested_task:
-        raise HTTPException(status_code=404, detail="Summary not found")
-    return requested_task[0]
+# @router.delete("/task/{pk}")
+# async def delete_task(pk: str):
+#     task = Task.get(pk)
+#     return task.delete()
 
 
-@router.get("/tasks", response_model=list[TaskResponseSchema])
-def get_tasks() -> list[TaskResponseSchema]:
-    return tasks
+# @router.get("/tasks", response_model=list[Task])
+# async def get_tasks() -> list[Task]:
+#     pks = Task.all_pks()
+#     tasks = [Task.get(pk) for pk in pks]
+#     return tasks
 
 
-@router.post(
-    "/task",
-    response_model=TaskResponseSchema,
-    status_code=201,
-)
-def create_task(payload: TaskPayloadSchema) -> TaskResponseSchema:
-    task_id = len(tasks) + 1
-    task_created_at = datetime.now()
-    new_task = {
-        "id": task_id,
-        "app": payload.app,
-        "environment": payload.environment,
-        "database": payload.database,
-        "instance": payload.instance,
-        "schema": payload.schema,
-        "table": payload.table,
-        "created_at": task_created_at,
-    }
-    tasks.append(new_task)
-    return new_task
+# @router.get("/task/{pk}", response_model=Task, status_code=200)
+# async def get_task(pk: str) -> Task:
+#     task = Task.get(pk)
+#     return task
+
+
+"""
+task_app
+task_env
+task_name
+task_status
+task_watermark
+task_start_at
+task_stop_at
+task_metadata
+"""
