@@ -61,7 +61,7 @@ def test_get_tasks(test_app_with_db, test_task_payload):
     response = test_app_with_db.post("/task", data=json.dumps(test_task_payload))
     pk = response.json()["pk"]
 
-    response = test_app_with_db.get(f"/tasks")
+    response = test_app_with_db.get("/tasks")
     assert response.status_code == 200
 
     response_list = response.json()
@@ -79,3 +79,9 @@ def test_delete_task(test_app_with_db, test_task_payload):
     response = test_app_with_db.delete(f"/task/{pk}")
     assert response.status_code == 200
     assert response.json() == {"pk": pk, "deleted": True}
+
+
+def test_delete_task_missing_pk(test_app_with_db):
+    response = test_app_with_db.delete("/task/notarealpk")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Task not found"

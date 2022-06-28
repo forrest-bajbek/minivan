@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from fastapi import HTTPException
 from aredis_om.model.model import NotFoundError
+from fastapi import HTTPException
 
 from app.models.pydantic import TaskPayloadSchema
 from app.models.redis import Task

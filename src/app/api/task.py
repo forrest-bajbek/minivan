@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException, Query  # , Path, Query
-from fastapi_cache.decorator import cache
-from aredis_om.model.model import NotFoundError
 
-from app.api import crud
+from aredis_om.model.model import NotFoundError
+from fastapi import APIRouter, HTTPException, Query
+from fastapi_cache.decorator import cache
+
 from app.models.pydantic import TaskPayloadSchema, TaskResponseSchema
 from app.models.redis import Task
 
