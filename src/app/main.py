@@ -35,7 +35,7 @@ async def startup_event():
     r = redis_cache()
 
     log.info("Initializing redis_cache...")
-    FastAPICache.init(RedisBackend(r), prefix="fastapi-cache")
+    FastAPICache.init(RedisBackend(r), prefix="minivan-cache")
 
 
 @app.on_event("shutdown")

@@ -30,7 +30,7 @@ def test_app_with_db():
     Task.Meta.database = redis_data(testing=settings.testing)
     FastAPICache.init(
         RedisBackend(redis_cache(testing=settings.testing)),
-        prefix="testing-fastapi-cache",
+        prefix="testing-minivan-cache",
     )
 
     with TestClient(app) as test_client:
