@@ -20,5 +20,7 @@ services:
       TESTING: 0
   redis-db:
     image: redislabs/rejson:2.0.11
+    # image: redis/redis-stack:latest
   redis-cache:
     image: redislabs/rejson:2.0.11
+    # image: redis/redis-stack:latest

@@ -57,17 +57,6 @@ def test_get_task_missing_pk(test_app_with_db):
     assert response.json()["detail"] == "Task not found"
 
 
-def test_get_tasks(test_app_with_db, test_task_payload):
-    response = test_app_with_db.post("/task", data=json.dumps(test_task_payload))
-    pk = response.json()["pk"]
-
-    response = test_app_with_db.get("/tasks")
-    assert response.status_code == 200
-
-    response_list = response.json()
-    assert len(list(filter(lambda d: d["pk"] == pk, response_list))) == 1
-
-
 def test_delete_task(test_app_with_db, test_task_payload):
     response = test_app_with_db.post("/task", data=json.dumps(test_task_payload))
     pk = response.json()["pk"]
