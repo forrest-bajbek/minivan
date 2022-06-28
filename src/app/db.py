@@ -1,29 +1,27 @@
 import logging
-import os
 
 import aioredis
 import aredis_om
+from redis import Redis
+
+from app.config import get_settings
 
 log = logging.getLogger("uvicorn")
 
+settings = get_settings()
 
-def get_redis_connection_data():
+
+def redis_data() -> Redis:
     return aredis_om.get_redis_connection(
-        url="{base_url}/{db}".format(
-            base_url=os.getenv("REDIS_DATA_URL"),
-            db=int(os.getenv("TESTING", 0)),
-        ),
+        url=settings.redis_data_url,
         encoding="utf8",
         decode_responses=True,
     )
 
 
-def get_redis_connection_cache():
+def redis_cache() -> Redis:
     return aioredis.from_url(
-        url="{base_url}/{db}".format(
-            base_url=os.getenv("REDIS_CACHE_URL"),
-            db=int(os.getenv("TESTING", 0)),
-        ),
+        url=settings.redis_cache_url,
         encoding="utf8",
         decode_responses=True,
     )

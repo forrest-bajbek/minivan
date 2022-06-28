@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 
+from fastapi import HTTPException
+from aredis_om.model.model import NotFoundError
+
 from app.models.pydantic import TaskPayloadSchema
 from app.models.redis import Task
 
@@ -10,11 +13,12 @@ async def post(payload: TaskPayloadSchema) -> Task:
     return await task.save()
 
 
-# async def get(pk: str) -> Task | None:
-#     summary = await TextSummary.filter(id=id).first().values()
-#     if summary:
-#         return summary
-#     return None
+async def get(pk: str) -> Task | None:
+    try:
+        task = await Task.get(pk)
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
 
 
 # async def get_all() -> list[Task] | None:

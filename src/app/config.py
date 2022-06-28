@@ -1,6 +1,5 @@
+import functools
 import logging
-import os
-from functools import cache
 
 from pydantic import BaseSettings
 
@@ -8,11 +7,13 @@ log = logging.getLogger("uvicorn")
 
 
 class Settings(BaseSettings):
-    environment: str = os.getenv("ENVIRONMENT", "dev")
-    testing: bool = os.getenv("TESTING", 0)
+    redis_data_url: str
+    redis_cache_url: str
+    environment: str = "dev"
+    testing: bool = False
 
 
-@cache
-def get_settings() -> BaseSettings:
+@functools.cache
+def get_settings() -> Settings:
     log.info("Loading config settings from the environment...")
     return Settings()

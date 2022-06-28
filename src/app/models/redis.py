@@ -1,11 +1,19 @@
+import logging
 from datetime import datetime
 
 from aredis_om import Field, JsonModel
 
-from app.db import get_redis_connection_data
+from app.db import redis_data
+
+log = logging.getLogger("uvicorn")
 
 
-class Task(JsonModel):
+class BaseJsonModel(JsonModel):
+    class Meta:
+        database = redis_data()
+
+
+class Task(BaseJsonModel):
     created_at: datetime = Field(...)
     updated_at: datetime = Field(...)
     task_app: str = Field(...)
@@ -16,6 +24,3 @@ class Task(JsonModel):
     task_start_at: datetime = Field(...)
     task_stop_at: datetime | None = Field(default=None)
     task_metadata: dict | None = Field(default=None)
-
-    class Meta:
-        database = get_redis_connection_data()

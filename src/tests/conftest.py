@@ -1,12 +1,24 @@
 import pytest
+from aredis_om import get_redis_connection
 from starlette.testclient import TestClient
 
 from app.config import Settings, get_settings
 from app.main import create_application
+from app.models.redis import Task
 
 
 def get_settings_override():
-    return Settings(testing=1)
+    return Settings(testing=True)
+
+
+settings = get_settings_override()
+
+
+Task.Meta.database = get_redis_connection(
+    url=f"{settings.redis_data_url}/{int(settings.testing)}",
+    encoding="utf8",
+    decode_responses=True,
+)
 
 
 @pytest.fixture(scope="module")
@@ -23,3 +35,17 @@ def test_app_with_db():
     app.dependency_overrides[get_settings] = get_settings_override
     with TestClient(app) as test_client:
         yield test_client
+
+
+@pytest.fixture(scope="module")
+def test_task_payload():
+    yield {
+        "task_app": "test_app",
+        "task_env": "dev",
+        "task_name": "test_name",
+        "task_status": "success",
+        "task_watermark": "2022-06-01T00:00:00+00:00",
+        "task_start_at": "2022-06-01T01:00:00+00:00",
+        "task_stop_at": "2022-06-01T02:00:00+00:00",
+        "task_metadata": {"key": "value", "some": ["list", "of", "items"]},
+    }

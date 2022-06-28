@@ -5,10 +5,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
 from app.api import ping, task
-from app.db import get_redis_connection_cache
-
-# from fastapi_cache.decorator import cache
-
+from app.db import redis_cache
 
 # from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,7 +32,7 @@ app = create_application()
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up...")
-    r = get_redis_connection_cache()
+    r = redis_cache()
     FastAPICache.init(RedisBackend(r), prefix="fastapi-cache")
 
 
