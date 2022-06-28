@@ -11,17 +11,17 @@ log = logging.getLogger("uvicorn")
 settings = get_settings()
 
 
-def redis_data() -> Redis:
+def redis_data(testing: bool = False) -> Redis:
     return aredis_om.get_redis_connection(
-        url=settings.redis_data_url,
+        url=f"{settings.redis_data_url}/{int(testing)}",
         encoding="utf8",
         decode_responses=True,
     )
 
 
-def redis_cache() -> Redis:
+def redis_cache(testing: bool = False) -> Redis:
     return aioredis.from_url(
-        url=settings.redis_cache_url,
+        url=f"{settings.redis_cache_url}/{int(testing)}",
         encoding="utf8",
         decode_responses=True,
     )

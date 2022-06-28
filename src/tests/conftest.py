@@ -1,24 +1,16 @@
 import pytest
-from aredis_om import get_redis_connection
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from starlette.testclient import TestClient
 
 from app.config import Settings, get_settings
+from app.db import redis_cache, redis_data
 from app.main import create_application
 from app.models.redis import Task
 
 
 def get_settings_override():
     return Settings(testing=True)
-
-
-settings = get_settings_override()
-
-
-Task.Meta.database = get_redis_connection(
-    url=f"{settings.redis_data_url}/{int(settings.testing)}",
-    encoding="utf8",
-    decode_responses=True,
-)
 
 
 @pytest.fixture(scope="module")
@@ -33,6 +25,14 @@ def test_app():
 def test_app_with_db():
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
+
+    settings = get_settings_override()
+    Task.Meta.database = redis_data(testing=settings.testing)
+    FastAPICache.init(
+        RedisBackend(redis_cache(testing=settings.testing)),
+        prefix="testing-fastapi-cache",
+    )
+
     with TestClient(app) as test_client:
         yield test_client
 

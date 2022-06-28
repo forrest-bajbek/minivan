@@ -33,6 +33,8 @@ app = create_application()
 async def startup_event():
     log.info("Starting up...")
     r = redis_cache()
+
+    log.info("Initializing redis_cache...")
     FastAPICache.init(RedisBackend(r), prefix="fastapi-cache")
 
 

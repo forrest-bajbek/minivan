@@ -19,6 +19,7 @@ async def post_task(payload: TaskPayloadSchema) -> TaskResponseSchema:
 
 
 @router.get("/task/{pk}", response_model=Task, status_code=200)
+@cache(expire=600)
 async def get_task(pk: str) -> Task:
     try:
         task = await Task.get(pk)
