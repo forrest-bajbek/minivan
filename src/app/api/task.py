@@ -1,36 +1,37 @@
-from datetime import datetime, timezone
+from fastapi import APIRouter, HTTPException, Path
+from app.models.pydantic import TaskPayloadSchema, TaskPayloadResponseSchema
+from app.models.tortoise import TaskSchema
+from app.api import crud
 
-from aredis_om.model.model import NotFoundError
-from fastapi import APIRouter, HTTPException
-from fastapi_cache.decorator import cache
-
-from app.models.pydantic import TaskPayloadSchema, TaskResponseSchema
-from app.models.redis import Task
 
 router = APIRouter()
 
 
-@router.post("/task", response_model=TaskResponseSchema, status_code=201)
-async def post_task(payload: TaskPayloadSchema) -> TaskResponseSchema:
-    now = datetime.now(timezone.utc)
-    task = Task(created_at=now, updated_at=now, **payload.dict())
-    result = await task.save()
-    return TaskResponseSchema(pk=result.pk)
+@router.post("/task", response_model=TaskPayloadResponseSchema, status_code=201)
+async def post_task(payload: TaskPayloadSchema) -> TaskPayloadResponseSchema:
+    task_id = await crud.post_task(payload)
+    response = TaskPayloadResponseSchema(id=task_id)
+    return response
 
 
-@router.get("/task/{pk}", response_model=Task, status_code=200)
-@cache(expire=600)
-async def get_task(pk: str) -> Task:
-    try:
-        task = await Task.get(pk)
-    except NotFoundError:
+@router.get("/task/{id}", response_model=TaskSchema)
+async def get_task(id: int = Path(..., gt=0)) -> TaskSchema:
+    task = await crud.get_task(id)
+    if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
 
-@router.delete("/task/{pk}")
-async def delete_task(pk: str):
-    deleted = await Task.delete(pk)
-    if not deleted:
+@router.get("/tasks", response_model=list[TaskSchema])
+async def get_tasks() -> list[TaskSchema]:
+    return await crud.get_tasks()
+
+
+@router.delete("/task/{id}")
+async def delete_summary(id: int = Path(..., gt=0)) -> dict:
+    task = await crud.get_task(id)
+    if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    return {"pk": pk, "deleted": True}
+    await crud.delete_task(id)
+    response = {"id": id, "deleted": True}
+    return response

@@ -1,13 +1,9 @@
 import logging
 
 from fastapi import FastAPI
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
 
 from app.api import ping, task
-from app.db import redis_cache
-
-# from fastapi.middleware.cors import CORSMiddleware
+from app.db import init_db
 
 log = logging.getLogger("uvicorn")
 
@@ -16,26 +12,17 @@ def create_application() -> FastAPI:
     application = FastAPI()
     application.include_router(ping.router, tags=["ping"])
     application.include_router(task.router, tags=["task"])
+
     return application
 
 
 app = create_application()
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["http://localhost:8000"],
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
 
 @app.on_event("startup")
 async def startup_event():
     log.info("Starting up...")
-    r = redis_cache()
-
-    log.info("Initializing redis_cache...")
-    FastAPICache.init(RedisBackend(r), prefix="minivan-cache")
+    init_db(app)
 
 
 @app.on_event("shutdown")

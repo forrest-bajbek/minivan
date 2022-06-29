@@ -1,11 +1,11 @@
 #!/bin/sh
 
-echo "Waiting for Redis..."
+echo "Waiting for database..."
 
-# while ! nc -z minivan-db 6379; do
-#   sleep 0.1
-# done
+while ! nc -z db 5432; do
+  sleep 0.1
+done
 
-echo "Redis started"
+echo "Database started."
 
 exec "$@"

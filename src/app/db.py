@@ -1,27 +1,45 @@
 import logging
+import os
 
-import aioredis
-import aredis_om
-from redis import Redis
-
-from app.config import get_settings
+from fastapi import FastAPI
+from tortoise import Tortoise, run_async
+from tortoise.contrib.fastapi import register_tortoise
 
 log = logging.getLogger("uvicorn")
 
-settings = get_settings()
+
+TORTOISE_ORM = {
+    "connections": {"default": os.environ.get("DATABASE_URL")},
+    "apps": {
+        "models": {
+            "models": ["app.models.tortoise", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
 
 
-def redis_data(testing: bool = False) -> Redis:
-    return aredis_om.get_redis_connection(
-        url=f"{settings.redis_data_url}/{int(testing)}",
-        encoding="utf8",
-        decode_responses=True,
+def init_db(app: FastAPI) -> None:
+    register_tortoise(
+        app,
+        db_url=os.environ.get("DATABASE_URL"),
+        modules={"models": ["app.models.tortoise"]},
+        generate_schemas=False,
+        add_exception_handlers=True,
     )
 
 
-def redis_cache(testing: bool = False) -> Redis:
-    return aioredis.from_url(
-        url=f"{settings.redis_cache_url}/{int(testing)}",
-        encoding="utf8",
-        decode_responses=True,
+async def generate_schema() -> None:
+    log.info("Initializing Tortoise...")
+
+    await Tortoise.init(
+        db_url=os.environ.get("DATABASE_URL"),
+        modules={"models": ["models.tortoise"]},
     )
+    log.info("Generating database schema via Tortoise...")
+    await Tortoise.generate_schemas()
+    await Tortoise.close_connections()
+
+
+if __name__ == "__main__":
+    run_async(generate_schema())
