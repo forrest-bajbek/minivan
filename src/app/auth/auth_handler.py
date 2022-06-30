@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta, timezone
 import time
+from datetime import timedelta
 
 from jose import jwt
 from passlib.context import CryptContext

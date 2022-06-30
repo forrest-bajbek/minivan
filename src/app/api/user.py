@@ -1,15 +1,14 @@
+import logging
+
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import JWTError
-from platformdirs import user_documents_dir
 
 from app.api import crud
 from app.auth.auth_bearer import oauth2_scheme
-from app.auth.auth_handler import decodeJWT, encodeJWT, verify_password, Token
+from app.auth.auth_handler import Token, decodeJWT, encodeJWT, verify_password
 from app.models.pydantic import UserSignupPayloadSchema
 from app.models.tortoise import User, UserSchema
-
-import logging
 
 logger = logging.getLogger("uvicorn")
 
