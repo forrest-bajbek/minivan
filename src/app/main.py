@@ -1,8 +1,9 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from app.api import ping, task, user
+from app.auth.auth_bearer import JWTBearer
 from app.db import init_db
 
 log = logging.getLogger("uvicorn")
@@ -17,6 +18,7 @@ def create_application() -> FastAPI:
     application.include_router(
         task.router,
         tags=["task"],
+        dependencies=[Depends(JWTBearer())],
     )
     application.include_router(
         user.router,
