@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import time
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -29,7 +30,7 @@ def get_password_hash(password: str) -> str:
 
 def encodeJWT(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
+    expire = time.time() + timedelta(minutes=settings.jwt_expire_minutes).seconds
     to_encode.update({"exp": expire})
     token = jwt.encode(to_encode, key=JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token
@@ -38,10 +39,6 @@ def encodeJWT(data: dict) -> str:
 def decodeJWT(token: str) -> dict:
     try:
         decoded_token = jwt.decode(token, key=JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        return (
-            decoded_token
-            if decoded_token["exp"] >= datetime.now(timezone.utc)
-            else None
-        )
+        return decoded_token if decoded_token["exp"] >= time.time() else None
     except:
         return {}

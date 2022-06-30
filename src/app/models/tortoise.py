@@ -31,8 +31,8 @@ class User(models.Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
 
-    # class PydanticMeta:
-    #     exclude = ["password_hash"]
+    class PydanticMeta:
+        exclude = ["password_hash"]
 
 
 UserSchema = pydantic_model_creator(User)

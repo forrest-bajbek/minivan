@@ -3,25 +3,25 @@ from app.models.pydantic import TaskPayloadSchema, UserSignupPayloadSchema
 from app.models.tortoise import Task, User
 
 
-async def create_task(payload: TaskPayloadSchema) -> Task:
+async def create_task(payload: TaskPayloadSchema) -> int:
     task = Task(**payload.dict())
     await task.save()
-    return task
+    return task.id
 
 
-async def get_task(id: int) -> Task | None:
+async def get_task(id: int) -> dict | None:
     task = await Task.filter(id=id).first().values()
     return task if task else None
 
 
-async def get_tasks() -> list[Task | None]:
+async def get_tasks() -> list[dict | None]:
     tasks = await Task.all().values()
     return tasks
 
 
-async def delete_task(id: int) -> Task:
+async def delete_task(id: int) -> bool:
     task = await Task.filter(id=id).first().delete()
-    return task
+    return bool(task)
 
 
 # async def put(id: int, payload: TaskPayloadSchema) -> dict | None:
@@ -34,26 +34,28 @@ async def delete_task(id: int) -> Task:
 #     return None
 
 
+async def user_exists(username: str) -> bool:
+    user = await User.filter(username=username).first().values()
+    return True if user else False
+
+
 async def create_user(payload: UserSignupPayloadSchema) -> User | None:
-    user = await User.filter(username=payload.username).first().values()
-    if user:
-        return None
-    new_user = User(
+    user = User(
         username=payload.username,
         password_hash=get_password_hash(payload.password),
         email=payload.email,
         full_name=payload.full_name,
         category=payload.category,
     )
-    await new_user.save(force_create=True)
-    return new_user
+    await user.save(force_create=True)
+    return user
 
 
-async def get_user(id: int) -> User | None:
+async def get_user(id: int) -> dict | None:
     user = await User.filter(id=id).first().values()
     return user if user else None
 
 
-async def get_user_from_username(username: str) -> User:
+async def get_user_from_username(username: str) -> dict:
     user = await User.filter(username=username).first().values()
     return user if user else None

@@ -17,7 +17,7 @@ def create_application() -> FastAPI:
     )
     application.include_router(
         task.router,
-        dependencies=[Depends(JWTBearer())],
+        # dependencies=[Depends(JWTBearer())],
         tags=["task"],
     )
     application.include_router(
