@@ -1,17 +1,16 @@
 from fastapi import APIRouter, HTTPException, Path
-from app.models.pydantic import TaskPayloadSchema, TaskPayloadResponseSchema
-from app.models.tortoise import TaskSchema
-from app.api import crud
 
+from app.api import crud
+from app.models.pydantic import TaskPayloadResponseSchema, TaskPayloadSchema
+from app.models.tortoise import TaskSchema
 
 router = APIRouter()
 
 
 @router.post("/task", response_model=TaskPayloadResponseSchema, status_code=201)
 async def post_task(payload: TaskPayloadSchema) -> TaskPayloadResponseSchema:
-    task_id = await crud.post_task(payload)
-    response = TaskPayloadResponseSchema(id=task_id)
-    return response
+    task = await crud.create_task(payload)
+    return TaskPayloadResponseSchema(id=task.id)
 
 
 @router.get("/task/{id}", response_model=TaskSchema)
@@ -24,7 +23,8 @@ async def get_task(id: int = Path(..., gt=0)) -> TaskSchema:
 
 @router.get("/tasks", response_model=list[TaskSchema])
 async def get_tasks() -> list[TaskSchema]:
-    return await crud.get_tasks()
+    tasks = await crud.get_tasks()
+    return tasks
 
 
 @router.delete("/task/{id}")

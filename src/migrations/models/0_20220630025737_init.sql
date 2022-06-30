@@ -13,12 +13,12 @@ CREATE TABLE IF NOT EXISTS "task" (
 );
 CREATE TABLE IF NOT EXISTS "user" (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "disabled" BOOL NOT NULL  DEFAULT False,
     "username" VARCHAR(100) NOT NULL UNIQUE,
+    "password_hash" VARCHAR(128) NOT NULL,
     "email" VARCHAR(320) NOT NULL,
-    "password_hash" VARCHAR(128),
-    "category" VARCHAR(30) NOT NULL  DEFAULT 'misc',
     "full_name" VARCHAR(100),
+    "category" VARCHAR(30) NOT NULL,
+    "disabled" BOOL NOT NULL  DEFAULT False,
     "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
