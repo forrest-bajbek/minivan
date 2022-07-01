@@ -10,7 +10,13 @@ from fastapi.security import (  # isort:skip
 )
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="token",
+    scopes={
+        "read": "Read Tasks",
+        "write": "Create, delete, and modify Tasks.",
+    },
+)
 
 
 class JWTBearer(HTTPBearer):

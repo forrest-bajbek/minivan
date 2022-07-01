@@ -1,5 +1,5 @@
 from app.auth.auth_handler import get_password_hash
-from app.models.pydantic import TaskPayloadSchema, UserSignupPayloadSchema
+from app.models.pydantic import TaskPayloadSchema, UserCreatePayloadSchema
 from app.models.tortoise import Task, User
 
 
@@ -24,14 +24,12 @@ async def delete_task(id: int) -> bool:
     return bool(task)
 
 
-# async def put(id: int, payload: TaskPayloadSchema) -> dict | None:
-#     summary = await TextSummary.filter(id=id).update(
-#         url=payload.url, summary=payload.summary
-#     )
-#     if summary:
-#         updated_summary = await TextSummary.filter(id=id).first().values()
-#         return updated_summary
-#     return None
+async def put(id: int, payload: TaskPayloadSchema) -> dict | None:
+    task = await Task.filter(id=id).update(**payload.dict())
+    if task:
+        updated_task = await Task.filter(id=id).first().values()
+        return updated_task
+    return None
 
 
 async def user_exists(username: str) -> bool:
@@ -39,7 +37,7 @@ async def user_exists(username: str) -> bool:
     return True if user else False
 
 
-async def create_user(payload: UserSignupPayloadSchema) -> User | None:
+async def create_user(payload: UserCreatePayloadSchema) -> str | None:
     user = User(
         username=payload.username,
         password_hash=get_password_hash(payload.password),
@@ -48,7 +46,7 @@ async def create_user(payload: UserSignupPayloadSchema) -> User | None:
         category=payload.category,
     )
     await user.save(force_create=True)
-    return user
+    return user.username
 
 
 async def get_user(id: int) -> dict | None:
@@ -56,6 +54,6 @@ async def get_user(id: int) -> dict | None:
     return user if user else None
 
 
-async def get_user_from_username(username: str) -> dict:
+async def get_user_from_username(username: str) -> dict | None:
     user = await User.filter(username=username).first().values()
     return user if user else None
