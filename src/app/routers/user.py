@@ -5,10 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm, SecurityScopes
 from jose import JWTError
 from pydantic import ValidationError
 
-from app.auth.auth_bearer import oauth2_scheme, JWTBearer
+from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import get_password_hash
 from app.models.enums import ScopeEnum
-from app.models.pydantic import UserCreatePayloadSchema, UserPasswordResetPayloadSchema
+from app.models.pydantic import (UserCreatePayloadSchema,
+                                 UserPasswordResetPayloadSchema)
 from app.models.tortoise import User, UserSchema
 from app.routers import crud
 

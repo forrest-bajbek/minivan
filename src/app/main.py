@@ -1,8 +1,7 @@
 import logging
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from app.auth.auth_bearer import JWTBearer
 from app.db import init_db
 from app.internal import admin
 from app.routers import ping, task, user

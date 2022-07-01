@@ -1,4 +1,3 @@
-import os
 import json
 
 import pytest
@@ -71,7 +70,7 @@ def test_user_credentials(test_app_with_db, test_admin_access_token):
         "category": "human",
     }
     # Create user account
-    response = test_app_with_db.post(
+    test_app_with_db.post(
         "/user/create",
         data=json.dumps(user_info),
         headers={"Authorization": f"Bearer {test_admin_access_token}"},
@@ -84,7 +83,11 @@ def test_user_access_token_read(test_app_with_db, test_user_credentials):
     # Log in as user with read scope, get access_token
     response = test_app_with_db.post(
         "/token",
-        data=f"username={test_user_credentials['username']}&password={test_user_credentials['password']}&scope=read",
+        data=(
+            f"username={test_user_credentials['username']}"
+            + f"&password={test_user_credentials['password']}"
+            + "&scope=read"
+        ),
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
     yield response.json()["access_token"]
@@ -95,7 +98,11 @@ def test_user_access_token_write(test_app_with_db, test_user_credentials):
     # Log in as user with write scope, get access_token
     response = test_app_with_db.post(
         "/token",
-        data=f"username={test_user_credentials['username']}&password={test_user_credentials['password']}&scope=write",
+        data=(
+            f"username={test_user_credentials['username']}"
+            + f"&password={test_user_credentials['password']}"
+            + "&scope=write"
+        ),
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
     yield response.json()["access_token"]

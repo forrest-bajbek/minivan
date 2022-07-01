@@ -22,7 +22,8 @@ def test_create_user(test_app_with_db, test_admin_access_token):
 def test_user_login_read(test_app_with_db, test_user_credentials):
     response = test_app_with_db.post(
         "/token",
-        data=f"username={test_user_credentials['username']}&password={test_user_credentials['password']}",
+        data=f"username={test_user_credentials['username']}"
+        + f"&password={test_user_credentials['password']}",
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200

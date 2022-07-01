@@ -9,7 +9,10 @@ def test_user_password_reset(
     # ---------------------------------------------------------------------------------
     response = test_app_with_db.post(
         "/token",
-        data=f"username={test_user_credentials['username']}&password={test_user_credentials['password']}",
+        data=(
+            f"username={test_user_credentials['username']}"
+            + f"&password={test_user_credentials['password']}"
+        ),
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200
@@ -36,7 +39,8 @@ def test_user_password_reset(
     # ---------------------------------------------------------------------------------
     response = test_app_with_db.post(
         "/token",
-        data=f"username={new_user_info['username']}&password={new_user_info['new_password']}",
+        data=f"username={new_user_info['username']}"
+        + f"&password={new_user_info['new_password']}",
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200
