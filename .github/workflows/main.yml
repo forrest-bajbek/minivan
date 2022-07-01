@@ -59,11 +59,11 @@ jobs:
         run: |
           docker run \
             -d \
-            --name minivan
-            -e PORT=8765
-            -e ENVIRONMENT=dev
+            --name minivan \
+            -e PORT=8765 \
+            -e ENVIRONMENT=dev \
             -e DATABASE_URL=sqlite://sqlite.db \
-            -p 5003:8765
+            -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install testing requirements
         run: docker exec minivan pip install black==22.6.0 flake8==4.0.1 isort==5.10.1 pytest==7.1.2

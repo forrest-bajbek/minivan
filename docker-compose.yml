@@ -14,16 +14,12 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
       JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db:5432/minivan_dev
-      TEST_DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db:5432/minivan_test
+      DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db:5432/${DATABASE_NAME}
       ENVIRONMENT: dev
       TESTING: 0
   db:
-    build:
-      context: ./src/db
-      dockerfile: Dockerfile
+    image: postgres:14-alpine
     environment:
+      POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
