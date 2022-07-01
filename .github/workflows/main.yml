@@ -66,7 +66,7 @@ jobs:
             -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install testing requirements
-        run: docker exec minivan python -m pip install black==22.6.0 flake8==4.0.1 isort==5.10.1 pytest==7.1.2
+        run: docker exec minivan pip install black==22.6.0 flake8==4.0.1 isort==5.10.1 pytest==7.1.2
       - name: Pytest
         run: docker exec minivan python -m pytest .
       - name: Flake8
