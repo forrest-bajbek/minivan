@@ -65,7 +65,7 @@ COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
-RUN pip install "uvicorn[standard]==0.16.0" "pydantic[email]==1.9.1"
+RUN pip install "uvicorn[standard]==0.16.0" "pydantic[email]==1.9.1" "passlib[bcrypt]==1.7.4"
 
 # add app
 COPY . .
