@@ -60,9 +60,12 @@ jobs:
           docker run \
             -d \
             --name minivan \
-            -e PORT=8765 \
-            -e ENVIRONMENT=dev \
+            -e JWT_SECRET=thisisnotarealsecret
+            -e JWT_ALGORITHM=HS256
+            -e JWT_EXPIRE_MINUTES=30
             -e DATABASE_URL=sqlite://sqlite.db \
+            -e ENVIRONMENT=dev \
+            -e PORT=8765 \
             -p 5003:8765 \
             ${{ env.IMAGE }}-final:latest
       - name: Install testing requirements
