@@ -13,6 +13,10 @@ jobs:
         uses: actions/checkout@v2.4.0
         with:
           ref: master
+      - name: Log in to GitHub Packages
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull images
         run: |
           docker pull ${{ env.IMAGE }}-builder:latest || true
