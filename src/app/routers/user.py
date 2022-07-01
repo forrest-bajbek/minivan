@@ -8,10 +8,13 @@ from pydantic import ValidationError
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import get_password_hash
 from app.models.enums import ScopeEnum
-from app.models.pydantic import (UserCreatePayloadSchema,
-                                 UserPasswordResetPayloadSchema)
 from app.models.tortoise import User, UserSchema
 from app.routers import crud
+
+from app.models.pydantic import (  # isort:skip
+    UserCreatePayloadSchema,
+    UserPasswordResetPayloadSchema,
+)
 
 from app.auth.auth_handler import (  # isort:skip
     decodeJWT,
