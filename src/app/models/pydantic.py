@@ -17,13 +17,13 @@ class TaskPayloadSchema(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "task_app": "Sonic Adventure",
+                "task_app": "Tornado",
                 "task_env": "dev",
-                "task_name": "Collect the chaos emeralds.",
+                "task_name": "Chase the Egg Carrier",
                 "task_status": "complete",
                 "task_watermark": "2022-06-27T00:00:00.000000+00:00",
-                "task_duration": 1200.13,
-                "task_metadata": {"key": "value", "some": ["list", "of", "items"]},
+                "task_duration": 120.54,
+                "task_metadata": {"score": 152113, "rank": "A"},
             }
         }
 
@@ -54,7 +54,7 @@ class UserPasswordResetPayloadSchema(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "username": "shadow",
-                "new_password": "maria",
+                "username": "amyrose",
+                "new_password": "spinninghammer",
             }
         }

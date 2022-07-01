@@ -7,7 +7,7 @@ from app.models.tortoise import User
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
-@router.post("/create")
+@router.post("/create", status_code=status.HTTP_201_CREATED)
 async def create_admin(payload: UserCreatePayloadSchema):
     existing_admin = await User.filter(is_admin=True).first().values()
     if existing_admin is not None:

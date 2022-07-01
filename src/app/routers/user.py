@@ -134,7 +134,11 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     return token
 
 
-@router.post("/user/create", dependencies=[Depends(get_current_active_admin_user)])
+@router.post(
+    "/user/create",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_active_admin_user)],
+)
 async def create_user(payload: UserCreatePayloadSchema = Body(...)) -> Token:
     if await crud.user_exists(payload.username):
         raise HTTPException(
@@ -155,6 +159,7 @@ async def create_user(payload: UserCreatePayloadSchema = Body(...)) -> Token:
 
 @router.put(
     "/user/password/reset",
+    status_code=status.HTTP_202_ACCEPTED,
     dependencies=[Depends(get_current_active_admin_user)],
 )
 async def user_password_reset(payload: UserPasswordResetPayloadSchema):
@@ -169,7 +174,7 @@ async def user_password_reset(payload: UserPasswordResetPayloadSchema):
     await user.select_for_update()
     user.password_hash = get_password_hash(payload.new_password)
     await user.save(update_fields=["password_hash"])
-    return {"message": f"Password reset for user '{user.username}'"}
+    return {"message": f"Password successfully reset for user '{user.username}'"}
 
 
 @router.get("/users/me", response_model=UserSchema)
