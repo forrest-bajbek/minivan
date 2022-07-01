@@ -5,4 +5,5 @@
 - [JWT Auth using HTTPBearer](https://testdriven.io/blog/fastapi-jwt-auth/)
 - [FastAPI Basic Security Guide](https://fastapi.tiangolo.com/tutorial/security/)
 - [FastAPI Advanced Security Guide](https://fastapi.tiangolo.com/advanced/security/)
+- [FastAPI Admin](https://fastapi-admin-docs.long2ice.io/)
 - [TestDriven.io Course: Test-Driven Development with FastAPI and Docker](https://testdriven.io/courses/tdd-fastapi/)
