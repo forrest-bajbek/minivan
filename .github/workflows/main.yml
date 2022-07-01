@@ -60,9 +60,9 @@ jobs:
           docker run \
             -d \
             --name minivan \
-            -e JWT_SECRET=thisisnotarealsecret
-            -e JWT_ALGORITHM=HS256
-            -e JWT_EXPIRE_MINUTES=30
+            -e JWT_SECRET=thisisnotarealsecret \
+            -e JWT_ALGORITHM=HS256 \
+            -e JWT_EXPIRE_MINUTES=30 \
             -e DATABASE_URL=sqlite://sqlite.db \
             -e ENVIRONMENT=dev \
             -e PORT=8765 \
