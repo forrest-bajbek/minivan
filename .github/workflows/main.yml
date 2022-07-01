@@ -30,7 +30,7 @@ jobs:
             --file ./src/Dockerfile.prod \
             "./src"
           docker build \
-            --cache-from ${{ env.IMAGE }}-builder:latest \
+            --cache-from ${{ env.IMAGE }}-final:latest \
             --tag ${{ env.IMAGE }}-final:latest \
             --file ./src/Dockerfile.prod \
             "./src"
